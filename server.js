@@ -9,20 +9,35 @@ app.use(express.json());
 app.use(cors());
 
 const sendEmail = async (req, res) => {
-  const { email, subject, message } = req.body;
+  const { email, subject, message, who, name } = req.body;
+
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-      user: "mhamadhfarhan@gmail.com",
-      pass: process.env.MAIL_PASS,
+      user:
+        who == "mhamadhfarhan@gmail.com"
+          ? "mhamadhfarhan@gmail.com"
+          : "mahdiayyad97@gmail.com",
+      pass:
+        who == "mhamadhfarhan@gmail.com"
+          ? process.env.MAIL_PASS_FARHAN
+          : process.env.MAIL_PASS_MAHDI,
     },
   });
 
   const mailOptions = {
     from: email,
-    to: "mhamadhfarhan@gmail.com, moh.hesham.f@gmail.com",
+    to:
+      who == "mhamadhfarhan@gmail.com"
+        ? "mhamadhfarhan@gmail.com, moh.hesham.f@gmail.com"
+        : "mahdiayyad97@gmail.com",
     subject: `From Portfolio. => ${email}`,
-    html: `<b> Subject is: </b> ${subject} <br/> <b>Message is</b> ${message}`,
+    html: `
+    <b> Subject is: </b> ${subject} <br/>
+
+      <b>Name: </b> ${name}<br/>
+    
+      <b>Message is</b> ${message}`,
   };
 
   await transporter.sendMail(mailOptions);
